@@ -723,14 +723,14 @@ APIKEY = ApiKey()
 
 
 def build_heartbeat(entity=None, timestamp=None, is_write=None,
-                    project=None, idb_path=None):
+                    project=None, local_file=None):
     """Returns a dict for passing to wakatime-cli as arguments."""
 
     heartbeat = {
         'entity': entity,
         'timestamp': timestamp,
         'is_write': is_write,
-        'idb_path': idb_path
+        'local_file': local_file,
     }
 
     if project:
@@ -773,7 +773,7 @@ class SendHeartbeatsThread(threading.Thread):
             '--entity', heartbeat['entity'],
             '--time', str('%f' % heartbeat['timestamp']),
             '--plugin', ua,
-            '--local-file', heartbeat['idb_path'],
+            '--local-file', heartbeat['local_file'],
             '--alternate-language', 'IDA',
             '--category', 'code reviewing'  # @note: @es3n1n: lmao
         ]
@@ -844,7 +844,7 @@ def append_heartbeat(entity, timestamp, is_write, project):
         'timestamp': timestamp,
         'is_write': is_write,
         'project': project,
-        'idb_path': idc.get_idb_path()
+        'local_file': idc.get_idb_path(),
     }
     HEARTBEATS.put_nowait(heartbeat)
 
